@@ -1,6 +1,8 @@
+import { UpdateTodoDTO } from './dto/update-todo.dto';
+import { CreateTodoDTO } from './dto/create-todo.dto';
 import { TodoEntity } from './entity/todo.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { DeleteQueryBuilder, Repository } from 'typeorm';
+import {Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
@@ -26,11 +28,11 @@ export class TodoService {
     }
   }
 
-  async create(data) {
+  async create(data:CreateTodoDTO) {
     return await this.todoRepository.save(this.todoRepository.create(data));
   }
 
-  async update(id: string, data) {
+  async update(id: string, data:UpdateTodoDTO) {
     const todo = await this.todoRepository.findOneOrFail({
       where: {
         id,
@@ -42,7 +44,7 @@ export class TodoService {
     return await this.todoRepository.save(todo);
   }
 
-  async deleteByid(id: string) {
+  async deleteById(id: string) {
     try {
       await this.todoRepository.findOneOrFail({
         where: {
