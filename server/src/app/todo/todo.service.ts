@@ -33,11 +33,7 @@ export class TodoService {
   }
 
   async update(id: string, data:UpdateTodoDTO) {
-    const todo = await this.todoRepository.findOneOrFail({
-      where: {
-        id,
-      },
-    });
+    const todo = await this.findOneOrFail(id);
 
     this.todoRepository.merge(todo, data);
 
@@ -46,11 +42,7 @@ export class TodoService {
 
   async deleteById(id: string) {
     try {
-      await this.todoRepository.findOneOrFail({
-        where: {
-          id,
-        },
-      });
+      await this.findOneOrFail(id);
 
       await this.todoRepository.softDelete(id);
 
