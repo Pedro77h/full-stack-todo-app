@@ -1,13 +1,13 @@
-import { Input, Text , Button } from "components";
+import { Input, Text, Button, Row  , Column} from "components";
 
 export const Home = () => {
   return (
-    <div>
-      <Text fontWeight='bold'>
-        Home
-      </Text>
-      <Input placeholder="" />
-      <Button/>
-    </div>
+    <Column width='600px'>
+      <Text fontWeight="bold">Home</Text>
+      <Row>
+        <Input placeholder="Enter a task name here..." />
+        <Button>OK</Button>
+      </Row>
+    </Column>
   );
 };

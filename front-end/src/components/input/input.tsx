@@ -7,7 +7,7 @@ export const Input = styled.input`
   color: #fff;
 
   &::placeholder{
-    color: rgba(0, 0 , 0 , 0.2)
+    color: rgba(255, 255 , 255 , 0.2);
   }
 
 `
