@@ -1,1 +1,1 @@
-export * from './Columm'
+export * from "./Columm";
