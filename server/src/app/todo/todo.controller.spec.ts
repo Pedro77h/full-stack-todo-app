@@ -161,7 +161,7 @@ describe('TodoController', () => {
       jest.spyOn(todoService, 'deleteById').mockRejectedValueOnce(new Error())
 
       //Assert
-      expect(todoController.destroy('1')).rejects.toThrowError();
+      expect(todoController.destroy('2')).rejects.toThrowError();
     })
 
   });
