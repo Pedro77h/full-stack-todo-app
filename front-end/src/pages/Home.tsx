@@ -1,29 +1,23 @@
 import { Input, Text, Button, Row, Column, List, Logo, Icon } from "components";
 import { useTodo } from "hooks";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 const secondsDefault = 1500;
 
 export const Home = () => {
-  const { getAll } = useTodo();
+  const { tasks, getAllTodos, createTodo } = useTodo();
 
   const [taskName, setTaskName] = useState<string>("");
-  const [tasks, setTasks] = useState<{ label: string }[]>([]);
   const [seconds, setSeconds] = useState<number>(secondsDefault);
   const [timer, setTimer] = useState<any>();
   const [stage, setStage] = useState<string>("ready");
+  const [taskIndex , setTaskIndex] = useState<number>(0)
 
-  const handleOkButton = () => {
-    if (!taskName) return;
-
-    setTasks((previous) => {
-      const copy = [...previous];
-      copy.push({ label: taskName });
-      return copy;
-    });
-
-    setTaskName("");
-  };
+  const handleOkButton = useCallback(async() => {
+    await createTodo({ task: taskName, isDone: 0 })
+    await getAllTodos()
+    setTaskName('')
+  }, [createTodo , taskName]);
 
   const secondsToTime = (secs: number) => {
     const divisorMinute = secs % 3600;
@@ -137,8 +131,8 @@ export const Home = () => {
   }, [handlePauseButton, handleStopButton, handleRestartButton, stage]);
 
   useEffect(() => {
-    getAll();
-  }, [getAll]);
+    getAllTodos();
+  }, [getAllTodos]);
 
   return (
     <Column width="600px" margin="0 auto">
@@ -175,7 +169,7 @@ export const Home = () => {
         />
         <Button onClick={handleOkButton}>OK</Button>
       </Row>
-      <List items={tasks} />
+      <List items={tasks} selectedIndex={taskIndex} onClick={setTaskIndex} />
     </Column>
   );
 };
