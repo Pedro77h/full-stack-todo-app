@@ -1,14 +1,14 @@
 import { Input, Text, Button, Row, Column, List, Logo, Icon } from "components";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
-
-const secondsDefault = 10
+const secondsDefault = 1500;
 
 export const Home = () => {
   const [taskName, setTaskName] = useState<string>("");
   const [tasks, setTasks] = useState<{ label: string }[]>([]);
   const [seconds, setSeconds] = useState<number>(secondsDefault);
-  const [timer, setTimer] = useState<any>()
+  const [timer, setTimer] = useState<any>();
+  const [stage, setStage] = useState<string>("ready");
 
   const handleOkButton = () => {
     if (!taskName) return;
@@ -28,25 +28,110 @@ export const Home = () => {
     const minutes = Math.floor(divisorMinute / 60);
     const seconds = Math.ceil(divisorMinute % 60);
 
-    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2 , '0')}`;
+    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
   };
 
-
   const startTimer = () => {
-   const timerInterval = setInterval(() => {
+    setStage("in_progress");
+
+    const timerInterval = setInterval(() => {
       setSeconds((previousSeconds) => {
         if (previousSeconds === 0) {
           clearInterval(timerInterval);
-          return 0
-        } 
+          setStage("finished");
+          setTimer(undefined);
+          return 0;
+        }
 
-        return previousSeconds - 1
+        return previousSeconds - 1;
       });
-   }, 1000)
-    
-    setTimer(timerInterval)
-  }
+    }, 1000);
 
+    setTimer(timerInterval);
+  };
+
+  const handlePauseButton = () => {
+    clearInterval(timer);
+    setTimer(undefined);
+  };
+
+  const handleStopButton = () => {
+    setStage("ready");
+    handlePauseButton();
+    setSeconds(secondsDefault);
+  };
+
+  const handleRestartButton = () => {
+    handleStopButton();
+    startTimer();
+  };
+
+  const handleStageStatus = useMemo<string>(() => {
+    switch (stage) {
+      case "ready":
+        return "Ready";
+      case "in_progress":
+        return "Time to work!";
+      case "finished":
+        return "Finished";
+      default:
+        return "Ready";
+    }
+  }, [stage]);
+
+  const handleStageButtons = useMemo(() => {
+    switch (stage) {
+      case "ready":
+        return (
+          <>
+            <Button variant="primary" onClick={startTimer}>
+              <Text fontFamily="secondary" fontSize="bodyExtraLarge" fontWeight="bold" color="primary">
+                START
+              </Text>
+            </Button>
+          </>
+        );
+      case "in_progress":
+        return (
+          <>
+            <Row py="20px">
+              <Button variant="primary" p="10px 20px" mx="5px" onClick={startTimer}>
+                <Icon variant="play" />
+              </Button>
+              <Button variant="primary" p="10px 20px" mx="5px" onClick={handlePauseButton}>
+                <Icon variant="pause" />
+              </Button>
+              <Button variant="primary" p="10px 20px" mx="5px" onClick={handleStopButton}>
+                <Icon variant="stop" />
+              </Button>
+            </Row>
+          </>
+        );
+      case "finished":
+        return (
+          <>
+            <Row py="20px">
+              <Button variant="primary" p="10px 20px" mx="5px" onClick={handleRestartButton}>
+                <Icon variant="restart" />
+              </Button>
+              <Button variant="primary" p="10px 20px" mx="5px">
+                <Icon variant="done" />
+              </Button>
+            </Row>
+          </>
+        );
+      default:
+        return (
+          <>
+            <Button variant="primary" onClick={startTimer}>
+              <Text fontFamily="secondary" fontSize="bodyExtraLarge" fontWeight="bold" color="primary">
+                START
+              </Text>
+            </Button>
+          </>
+        );
+    }
+  }, [handlePauseButton, handleStopButton, handleRestartButton, stage]);
 
   return (
     <Column width="600px" margin="0 auto">
@@ -63,35 +148,12 @@ export const Home = () => {
         alignItems="center"
       >
         <Text fontFamily="secondary" fontSize="bodyExtraLarge">
-          Ready
+          {handleStageStatus}
         </Text>
         <Text fontFamily="secondary" fontWeight="bold" fontSize="displayExtraLarge" py="30px">
           {secondsToTime(seconds)}
         </Text>
-
-        <Button variant="primary"  onClick={startTimer}>
-          <Text fontFamily="secondary" fontSize="bodyExtraLarge" fontWeight="bold" color="primary" >
-            START
-          </Text>
-        </Button>
-
-        <Row py="20px">
-          <Button variant="primary" p="10px 20px" mx="5px">
-            <Icon variant="play" />
-          </Button>
-          <Button variant="primary" p="10px 20px" mx="5px">
-            <Icon variant="pause" />
-          </Button>
-          <Button variant="primary" p="10px 20px" mx="5px">
-            <Icon variant="stop" />
-          </Button>
-          <Button variant="primary" p="10px 20px" mx="5px">
-            <Icon variant="restart" />
-          </Button>
-          <Button variant="primary" p="10px 20px" mx="5px">
-            <Icon variant="done" />
-          </Button>
-        </Row>
+        {handleStageButtons}
       </Column>
 
       <Text fontWeight="bold" fontSize="bodyLarge" my="10px" pl="10px">
