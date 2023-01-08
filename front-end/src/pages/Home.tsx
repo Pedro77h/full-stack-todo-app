@@ -1,9 +1,12 @@
 import { Input, Text, Button, Row, Column, List, Logo, Icon } from "components";
-import { useMemo, useState } from "react";
+import { useTodo } from "hooks";
+import { useEffect, useMemo, useState } from "react";
 
 const secondsDefault = 1500;
 
 export const Home = () => {
+  const { getAll } = useTodo();
+
   const [taskName, setTaskName] = useState<string>("");
   const [tasks, setTasks] = useState<{ label: string }[]>([]);
   const [seconds, setSeconds] = useState<number>(secondsDefault);
@@ -132,6 +135,10 @@ export const Home = () => {
         );
     }
   }, [handlePauseButton, handleStopButton, handleRestartButton, stage]);
+
+  useEffect(() => {
+    getAll();
+  }, [getAll]);
 
   return (
     <Column width="600px" margin="0 auto">
