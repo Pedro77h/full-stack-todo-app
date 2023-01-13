@@ -13,6 +13,10 @@ fontSizes.displayExtraLarge = fontSizes[3];
 
 const theme = {
   fontSizes,
+  fonts: {
+    primary: 'Raleway',
+    secondary: 'Roboto, sans-serif'
+  },
   colors: {
     primary: "#256784",
     secondary: "#f98531",
