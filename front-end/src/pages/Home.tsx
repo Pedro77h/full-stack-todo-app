@@ -1,22 +1,22 @@
-import { Input, Text, Button, Row, Column, List, Logo, Icon } from "components";
-import { useTodo } from "hooks";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Input, Text, Button, Row, Column, List, Logo, Icon } from 'components';
+import { useTodo } from 'hooks';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 const secondsDefault = 1500;
 
 export const Home = () => {
   const { tasks, getAllTodos, createTodo, updateTodo } = useTodo();
 
-  const [taskName, setTaskName] = useState<string>("");
+  const [taskName, setTaskName] = useState<string>('');
   const [seconds, setSeconds] = useState<number>(secondsDefault);
   const [timer, setTimer] = useState<any>();
-  const [stage, setStage] = useState<string>("ready");
+  const [stage, setStage] = useState<string>('ready');
   const [taskIndex, setTaskIndex] = useState<number>(0);
 
   const handleOkButton = useCallback(async () => {
     await createTodo({ task: taskName, isDone: 0 });
     await getAllTodos();
-    setTaskName("");
+    setTaskName('');
   }, [createTodo, taskName]);
 
   const secondsToTime = (secs: number) => {
@@ -25,17 +25,17 @@ export const Home = () => {
     const minutes = Math.floor(divisorMinute / 60);
     const seconds = Math.ceil(divisorMinute % 60);
 
-    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
   };
 
   const startTimer = () => {
-    setStage("in_progress");
+    setStage('in_progress');
 
     const timerInterval = setInterval(() => {
       setSeconds((previousSeconds) => {
         if (previousSeconds === 0) {
           clearInterval(timerInterval);
-          setStage("finished");
+          setStage('finished');
           setTimer(undefined);
           return 0;
         }
@@ -53,7 +53,7 @@ export const Home = () => {
   };
 
   const handleStopButton = () => {
-    setStage("ready");
+    setStage('ready');
     handlePauseButton();
     setSeconds(secondsDefault);
   };
@@ -65,14 +65,14 @@ export const Home = () => {
 
   const handleStageStatus = useMemo<string>(() => {
     switch (stage) {
-      case "ready":
-        return "Ready";
-      case "in_progress":
-        return "Time to work!";
-      case "finished":
-        return "Finished";
+      case 'ready':
+        return 'Ready';
+      case 'in_progress':
+        return 'Time to work!';
+      case 'finished':
+        return 'Finished';
       default:
-        return "Ready";
+        return 'Ready';
     }
   }, [stage]);
 
@@ -83,12 +83,12 @@ export const Home = () => {
     await getAllTodos();
 
     setSeconds(secondsDefault);
-    setStage("ready");
+    setStage('ready');
   }, [timer, taskIndex, updateTodo]);
 
   const handleStageButtons = useMemo(() => {
     switch (stage) {
-      case "ready":
+      case 'ready':
         return (
           <>
             <Button variant="primary" onClick={startTimer}>
@@ -98,7 +98,7 @@ export const Home = () => {
             </Button>
           </>
         );
-      case "in_progress":
+      case 'in_progress':
         return (
           <>
             <Row py="20px">
@@ -114,7 +114,7 @@ export const Home = () => {
             </Row>
           </>
         );
-      case "finished":
+      case 'finished':
         return (
           <>
             <Row py="20px">
