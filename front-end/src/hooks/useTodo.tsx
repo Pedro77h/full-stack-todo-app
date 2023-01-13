@@ -13,15 +13,22 @@ export const useTodo = () => {
     seTasks(data);
   }, []);
 
-  const createTodo = useCallback(async (todo: Pick<ITodo , 'task' | 'isDone'>) => {
-    const { status } = await TodoService.createTodo(todo)
+  const createTodo = useCallback(async (todo: Pick<ITodo, "task" | "isDone">) => {
+    const { status } = await TodoService.createTodo(todo);
 
-    if(status !== 201) throw new Error()
+    if (status !== 201) throw new Error();
+  }, []);
+
+  const updateTodo = useCallback(async (id: string, todo: Pick<ITodo, "task" | "isDone">) => {
+    const { status } = await TodoService.updateTodo(id, { task: todo.task, isDone: todo.isDone });
+
+    if (status !== 200) throw new Error();
   }, []);
 
   return {
     tasks,
     getAllTodos,
     createTodo,
+    updateTodo,
   };
 };

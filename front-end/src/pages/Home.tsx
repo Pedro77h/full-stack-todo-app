@@ -5,19 +5,19 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 const secondsDefault = 1500;
 
 export const Home = () => {
-  const { tasks, getAllTodos, createTodo } = useTodo();
+  const { tasks, getAllTodos, createTodo, updateTodo } = useTodo();
 
   const [taskName, setTaskName] = useState<string>("");
   const [seconds, setSeconds] = useState<number>(secondsDefault);
   const [timer, setTimer] = useState<any>();
   const [stage, setStage] = useState<string>("ready");
-  const [taskIndex , setTaskIndex] = useState<number>(0)
+  const [taskIndex, setTaskIndex] = useState<number>(0);
 
-  const handleOkButton = useCallback(async() => {
-    await createTodo({ task: taskName, isDone: 0 })
-    await getAllTodos()
-    setTaskName('')
-  }, [createTodo , taskName]);
+  const handleOkButton = useCallback(async () => {
+    await createTodo({ task: taskName, isDone: 0 });
+    await getAllTodos();
+    setTaskName("");
+  }, [createTodo, taskName]);
 
   const secondsToTime = (secs: number) => {
     const divisorMinute = secs % 3600;
@@ -76,6 +76,16 @@ export const Home = () => {
     }
   }, [stage]);
 
+  const handleDoneButton = useCallback(async () => {
+    const task = tasks[taskIndex];
+
+    await updateTodo(task.id, { ...task, isDone: 1 });
+    await getAllTodos();
+
+    setSeconds(secondsDefault);
+    setStage("ready");
+  }, [timer, taskIndex, updateTodo]);
+
   const handleStageButtons = useMemo(() => {
     switch (stage) {
       case "ready":
@@ -111,7 +121,7 @@ export const Home = () => {
               <Button variant="primary" p="10px 20px" mx="5px" onClick={handleRestartButton}>
                 <Icon variant="restart" />
               </Button>
-              <Button variant="primary" p="10px 20px" mx="5px">
+              <Button variant="primary" p="10px 20px" mx="5px" onClick={handleDoneButton}>
                 <Icon variant="done" />
               </Button>
             </Row>

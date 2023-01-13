@@ -1,4 +1,4 @@
-import { Column, Text } from "components";
+import { Column, Icon, Row, Text } from "components";
 import React from "react";
 
 export type ListItemProps = {
@@ -24,7 +24,10 @@ export const ListItem: React.FC<ListItemProps> = ({ index, id, task, isDone, onC
       borderLeftColor={isActive ? "#fff" : "transparent"}
       onClick={() => onClick(index)}
     >
-      <Text>{task}</Text>
+      <Row>
+        <Text flex={1}>{task}</Text>
+        {isDone === 1 && <Icon variant="done-white" />}
+      </Row>
     </Column>
   );
 };
